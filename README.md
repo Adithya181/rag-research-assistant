@@ -1,5 +1,7 @@
 # 🤖 Multi-Tool RAG Research Assistant
 
+🔗 **[Live Demo](https://rag-research-assistant-fuzjfaqbygqztvishbrv6c.streamlit.app)**
+
 A Retrieval-Augmented Generation (RAG) system over 8 foundational machine
 learning papers (Transformer, BERT, ResNet, GPT-3, Adam, Dropout, Batch
 Normalization, ViT), wrapped in a multi-tool agent and served through an
