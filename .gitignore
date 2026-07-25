@@ -1,0 +1,16 @@
+# secrets
+.streamlit/secrets.toml
+.env
+
+# downloaded papers (regenerated via scripts/download_papers.py)
+data/papers/*.pdf
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# misc
+.DS_Store
+logs.txt
