@@ -8,12 +8,19 @@ Deploy on Streamlit Community Cloud:
     Set GROQ_API_KEY in the app's "Secrets" panel (see README.md).
 """
 import os
+import glob
 import streamlit as st
 from src.rag_engine import RAGEngine
 from src.agent import Agent
+from scripts.download_papers import download_papers
 
 st.set_page_config(page_title="ML Papers Agent", page_icon="🤖", layout="centered")
 
+# ---------- Auto-download papers on first boot (e.g. Streamlit Cloud) ----------
+# data/papers/ is gitignored, so a freshly cloned deployment starts empty.
+if not glob.glob("data/papers/*.pdf"):
+    with st.spinner("First-time setup: downloading papers..."):
+        download_papers("data/papers")
 
 # ---------- API key: Streamlit secrets first, then env var (for local runs) ----------
 def get_groq_api_key() -> str | None:
