@@ -59,7 +59,7 @@ def build_agent(groq_api_key: str, rag_engine: RAGEngine) -> AgentExecutor:
 
     # ---- Agent ----
     llm = ChatGroq(
-        model="llama-3.1-70b-versatile",
+        model="llama-3.3-70b-versatile",
         groq_api_key=groq_api_key,
         temperature=0,
     )
@@ -68,11 +68,50 @@ def build_agent(groq_api_key: str, rag_engine: RAGEngine) -> AgentExecutor:
         [
             (
                 "system",
-                "You are a helpful research assistant. Decide which tool "
-                "fits the user's request — the knowledge base for paper "
-                "questions, the calculator for math, or the text utilities "
-                "for keyword/word-count requests. Only use knowledge_base_search "
-                "for questions actually about the 8 ML papers.",
+                """You are an intelligent research assistant with a strictly
+limited scope. You have EXACTLY four tools available, and no others:
+
+1. knowledge_base_search
+   - Use for ANY question related to the eight ML papers:
+     • Transformer
+     • BERT
+     • ResNet
+     • GPT-3
+     • Adam
+     • Batch Normalization
+     • Dropout
+     • Vision Transformer (ViT)
+   - If a question is even loosely about one of these papers or ML
+     concepts they cover, call this tool rather than guessing.
+
+2. calculator
+   - Use for mathematical expressions.
+
+3. extract_keywords
+   - Use whenever the user asks to extract keywords.
+
+4. word_count
+   - Use whenever the user asks to count words.
+
+You do NOT have access to the internet, a web browser, or any other
+tool of any kind — including but not limited to brave_search,
+web_search, wolfram_alpha, or code_interpreter. These tools do not
+exist in this environment. NEVER attempt to call them under any
+circumstances.
+
+STRICT SCOPE RULE: If a question does not fit any of the four tools
+above AND is not about the eight ML papers, you must NOT answer it
+using your own general knowledge, and you must NOT call any tool.
+Instead, reply with exactly this kind of message (adapt the wording
+naturally, but keep the meaning): "That's outside what I can help
+with — I can only answer questions about the 8 ML papers
+(Transformer, BERT, ResNet, GPT-3, Adam, Batch Normalization,
+Dropout, ViT), or use the calculator, keyword extractor, and word
+counter tools." Do not add any additional facts or information
+beyond that scope message.
+
+Never answer from your own general knowledge as a substitute for a
+tool. Always call the correct tool when one applies.""",
             ),
             MessagesPlaceholder(variable_name="chat_history", optional=True),
             ("human", "{input}"),
@@ -81,19 +120,40 @@ def build_agent(groq_api_key: str, rag_engine: RAGEngine) -> AgentExecutor:
     )
 
     agent = create_tool_calling_agent(llm, tools, prompt)
-    executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+
+    executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
+        verbose=True,
+        return_intermediate_steps=True,
+    )
+
     return executor
 
 
 def run_agent(executor: AgentExecutor, query: str) -> dict:
-    """Runs the agent and returns the answer plus which tool(s) fired,
-    so app.py can still show the tool-type badge in the UI."""
+    """
+    Runs the agent and returns:
+      - answer
+      - tool(s) used
+    """
+
     result = executor.invoke({"input": query})
 
-    tool_used = "unknown"
-    for step in result.get("intermediate_steps", []):
-        action = step[0]
-        tool_used = action.tool
-        break
+    intermediate_steps = result.get("intermediate_steps", [])
 
-    return {"answer": result["output"], "tool": tool_used}
+    if intermediate_steps:
+        tools_used = []
+
+        for action, observation in intermediate_steps:
+            tools_used.append(action.tool)
+
+        # Remove duplicates while preserving order
+        tool_used = " → ".join(dict.fromkeys(tools_used))
+    else:
+        tool_used = "LLM"
+
+    return {
+        "answer": result["output"],
+        "tool": tool_used,
+    }
