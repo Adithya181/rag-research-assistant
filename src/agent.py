@@ -1,120 +1,99 @@
 """
-Multi-tool agent: routes an incoming query to the right tool
-(calculator, keyword extractor, word counter, or RAG) and returns
-a structured, schema-validated response.
+Multi-tool agent — LangChain version.
+
+Replaces regex/keyword routing with real LLM-driven tool selection
+using LangChain's tool-calling agent. The LLM itself decides which
+tool to call based on the user's query.
 """
+
 import re
+from langchain_core.tools import tool
+from langchain_groq import ChatGroq
+from langchain.agents import create_tool_calling_agent, AgentExecutor
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-STOPWORDS = {"about", "which", "there", "their", "would", "these", "those",
-             "extract", "keywords", "from"}
-
-PAPER_KEYWORDS = [
-    "paper", "explain", "what is", "how does", "describe", "architecture",
-    "model", "transformer", "resnet", "bert", "attention", "optimizer",
-    "dropout", "batch norm", "vit",
-]
+from src.rag_engine import RAGEngine
 
 
-def calculator(expression: str) -> str:
-    """Safely evaluate a basic arithmetic expression (+, -, *, /, %)."""
-    try:
-        cleaned = re.sub(r"[^0-9+\-*/%.() ]", "", expression).strip()
-        if not cleaned:
-            return "Error in calculation"
-        return str(eval(cleaned, {"__builtins__": {}}, {}))
-    except Exception:
-        return "Error in calculation"
+def build_agent(groq_api_key: str, rag_engine: RAGEngine) -> AgentExecutor:
+    # ---- Tools ----
+    @tool
+    def knowledge_base_search(query: str) -> str:
+        """Answer questions about the 8 ML papers (Transformer, BERT,
+        ResNet, GPT-3, Adam, Dropout, Batch Normalization, ViT) using
+        retrieval-augmented generation over the paper text. Use this
+        for any conceptual or technical question about the papers."""
+        result = rag_engine.query(query)
+        sources = ", ".join(s["source"] for s in result["sources"]) or "no matching source"
+        return f"{result['answer']}\n\n(Sources: {sources})"
 
-
-def looks_like_math(query: str) -> bool:
-    stripped = query.strip().strip('"').strip("'")
-    return bool(re.fullmatch(r"[0-9+\-*/%.() ]+", stripped)) and stripped != ""
-
-
-def extract_keywords(text: str) -> list[str]:
-    """Return up to 5 unique keywords longer than 4 characters."""
-    try:
-        words = [w.lower().strip(".,!?") for w in text.split() if len(w) > 4]
-        words = [w for w in words if w not in STOPWORDS]
-        seen, unique = set(), []
-        for w in words:
-            if w not in seen:
-                seen.add(w)
-                unique.append(w)
-        return unique[:5]
-    except Exception:
-        return []
-
-
-def word_counter(text: str) -> int:
-    try:
-        return len(text.split())
-    except Exception:
-        return 0
-
-
-def looks_like_paper_question(query: str) -> bool:
-    query_lower = query.lower()
-    return any(kw in query_lower for kw in PAPER_KEYWORDS)
-
-
-def validate_schema(response: dict) -> bool:
-    return isinstance(response, dict) and "type" in response and "result" in response
-
-
-class Agent:
-    """Routes queries to calculator / keyword / word-count / RAG tools."""
-
-    def __init__(self, rag_engine):
-        self.rag_engine = rag_engine
-        self.execution_log: list[dict] = []
-
-    def run(self, query: str) -> dict:
-        query_lower = query.lower()
-        node = None
+    @tool
+    def calculator(expression: str) -> str:
+        """Evaluate a basic arithmetic expression, e.g. '50+6*7%10-5'.
+        Only supports +, -, *, /, %, parentheses, and numbers."""
+        if not re.fullmatch(r"[0-9\.\+\-\*\/\%\(\)\s]+", expression):
+            return "Invalid expression — only numbers and + - * / % ( ) are allowed."
         try:
-            if "calculate" in query_lower or looks_like_math(query):
-                node = "calculator_tool"
-                expr = query_lower.replace("calculate", "").strip().strip('"').strip("'")
-                result = calculator(expr)
-                response = ({"type": "error", "result": result}
-                            if result == "Error in calculation"
-                            else {"type": "calculation", "result": result})
-
-            elif "keywords" in query_lower:
-                node = "keyword_tool"
-                text = query_lower.replace("extract keywords from", "").strip()
-                response = {"type": "keywords", "result": extract_keywords(text)}
-
-            elif "count words" in query_lower or "word count" in query_lower:
-                node = "word_counter_tool"
-                text = (query_lower.replace("count words in", "")
-                                    .replace("word count of", "").strip())
-                response = {"type": "word_count", "result": word_counter(text)}
-
-            elif looks_like_paper_question(query):
-                node = "rag_tool"
-                rag_result = self.rag_engine.generate_answer(query)
-                response = {
-                    "type": "rag_answer",
-                    "result": rag_result["answer"],
-                    "sources": rag_result["sources"],
-                }
-
-            else:
-                node = "general_response"
-                response = {
-                    "type": "general",
-                    "result": f"You asked: '{query}'. This is a general query with no specific tool.",
-                }
-
+            return str(eval(expression, {"__builtins__": {}}))
         except Exception as e:
-            node = "error_handler"
-            response = {"type": "error", "result": f"Something went wrong: {e}"}
+            return f"Could not evaluate expression: {e}"
 
-        self.execution_log.append({"query": query, "node": node})
+    @tool
+    def extract_keywords(text: str) -> str:
+        """Extract the most significant keywords from a passage of text."""
+        stopwords = {
+            "is", "the", "a", "an", "and", "or", "of", "to", "in", "for",
+            "on", "with", "are", "was", "were", "be", "by", "at", "from",
+        }
+        words = re.findall(r"[A-Za-z]+", text.lower())
+        keywords = sorted(set(w for w in words if w not in stopwords and len(w) > 3))
+        return ", ".join(keywords) if keywords else "No significant keywords found."
 
-        if not validate_schema(response):
-            response = {"type": "error", "result": "Response did not match expected schema"}
+    @tool
+    def word_count(text: str) -> str:
+        """Count the number of words in a passage of text."""
+        count = len(text.split())
+        return f"Word count: {count}"
 
-        return response
+    tools = [knowledge_base_search, calculator, extract_keywords, word_count]
+
+    # ---- Agent ----
+    llm = ChatGroq(
+        model="llama-3.1-70b-versatile",
+        groq_api_key=groq_api_key,
+        temperature=0,
+    )
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                "You are a helpful research assistant. Decide which tool "
+                "fits the user's request — the knowledge base for paper "
+                "questions, the calculator for math, or the text utilities "
+                "for keyword/word-count requests. Only use knowledge_base_search "
+                "for questions actually about the 8 ML papers.",
+            ),
+            MessagesPlaceholder(variable_name="chat_history", optional=True),
+            ("human", "{input}"),
+            MessagesPlaceholder(variable_name="agent_scratchpad"),
+        ]
+    )
+
+    agent = create_tool_calling_agent(llm, tools, prompt)
+    executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+    return executor
+
+
+def run_agent(executor: AgentExecutor, query: str) -> dict:
+    """Runs the agent and returns the answer plus which tool(s) fired,
+    so app.py can still show the tool-type badge in the UI."""
+    result = executor.invoke({"input": query})
+
+    tool_used = "unknown"
+    for step in result.get("intermediate_steps", []):
+        action = step[0]
+        tool_used = action.tool
+        break
+
+    return {"answer": result["output"], "tool": tool_used}

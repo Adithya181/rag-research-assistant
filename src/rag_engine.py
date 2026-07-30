@@ -1,111 +1,124 @@
 """
-Core RAG engine: PDF ingestion, chunking, embeddings, FAISS retrieval,
-and Groq-based answer generation.
+RAG Engine — LangChain version.
 
-This module is imported by both app.py (Streamlit UI) and any
-notebook/script use, so the pipeline logic lives in exactly one place.
+Replaces manual PDF parsing, chunking, embedding, and FAISS handling
+with LangChain's standardized components. Same behavior as before
+(distance-filtered retrieval, grounded generation via Groq), but with
+less boilerplate and free index persistence.
 """
+
 import os
-import glob
-import numpy as np
-from pypdf import PdfReader
-from sentence_transformers import SentenceTransformer
-import faiss
-from groq import Groq
+from langchain_community.document_loaders import PyPDFDirectoryLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 
+# ---- Config ----
+PAPERS_DIR = "data/papers"
+INDEX_DIR = "data/faiss_index"
+EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+CHUNK_SIZE = 800
+CHUNK_OVERLAP = 150
+DISTANCE_THRESHOLD = 0.8  # tune based on your embedding model's score scale
+TOP_K = 4
 
-def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
-    """Split text into overlapping word chunks so a sentence sitting at a
-    chunk boundary still appears fully in at least one chunk."""
-    words = text.split()
-    chunks = []
-    start = 0
-    while start < len(words):
-        end = start + chunk_size
-        chunks.append(" ".join(words[start:end]))
-        start += chunk_size - overlap
-    return chunks
-
-
-def load_and_chunk_papers(papers_dir: str = "data/papers") -> tuple[list[str], list[dict]]:
-    """Read every PDF in papers_dir, extract text, and chunk it.
-    Returns (all_chunks, chunk_metadata) where metadata tracks source file."""
-    all_chunks, chunk_metadata = [], []
-    for path in sorted(glob.glob(os.path.join(papers_dir, "*.pdf"))):
-        reader = PdfReader(path)
-        full_text = " ".join(page.extract_text() or "" for page in reader.pages)
-        for chunk in chunk_text(full_text):
-            all_chunks.append(chunk)
-            chunk_metadata.append({"source": os.path.basename(path)})
-    return all_chunks, chunk_metadata
-
-
-class RAGEngine:
-    """Wraps embedder + FAISS index + Groq client into one reusable object."""
-
-    def __init__(self, groq_api_key: str, papers_dir: str = "data/papers",
-                 embedding_model: str = "all-MiniLM-L6-v2"):
-        self.client = Groq(api_key=groq_api_key)
-        self.embedder = SentenceTransformer(embedding_model)
-
-        self.all_chunks, self.chunk_metadata = load_and_chunk_papers(papers_dir)
-        if not self.all_chunks:
-            raise RuntimeError(
-                f"No PDFs found in '{papers_dir}'. Run scripts/download_papers.py first."
-            )
-
-        embeddings = self.embedder.encode(self.all_chunks, show_progress_bar=False)
-        dim = embeddings.shape[1]
-        self.index = faiss.IndexFlatL2(dim)
-        self.index.add(np.array(embeddings))
-
-    def retrieve(self, query: str, top_k: int = 3, max_distance: float = 1.2) -> list[dict]:
-        """Return top_k chunks within max_distance of the query embedding.
-        The distance cutoff keeps clearly irrelevant chunks out of the prompt."""
-        query_vector = self.embedder.encode([query])
-        distances, indices = self.index.search(np.array(query_vector), top_k)
-        results = []
-        for dist, idx in zip(distances[0], indices[0]):
-            if dist <= max_distance:
-                results.append({
-                    "text": self.all_chunks[idx],
-                    "source": self.chunk_metadata[idx]["source"],
-                    "distance": float(dist),
-                })
-        return results
-
-    def generate_answer(self, query: str, top_k: int = 3,
-                         model: str = "llama-3.1-8b-instant") -> dict:
-        retrieved = self.retrieve(query, top_k=top_k)
-
-        if not retrieved:
-            return {
-                "answer": "I couldn't find anything relevant to that in the indexed papers.",
-                "sources": [],
-            }
-
-        context = "\n\n".join(
-            f"[Source: {r['source']}]\n{r['text']}" for r in retrieved
-        )
-        prompt = f"""You are a research assistant answering questions about machine learning papers.
-Use ONLY the context below to answer the question. If the context doesn't contain
-enough information to answer, say so honestly instead of guessing.
+RAG_PROMPT = ChatPromptTemplate.from_template(
+    """You are a research assistant answering questions about machine
+learning papers. Use ONLY the context below to answer. If the context
+doesn't contain the answer, say you don't have enough information —
+do not make anything up.
 
 Context:
 {context}
 
-Question:
-{query}
+Question: {question}
 
-Answer:
-"""
-        response = self.client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.2,
-            max_tokens=300,
+Answer, citing which paper(s) you drew from where relevant:"""
+)
+
+
+class RAGEngine:
+    def __init__(self, groq_api_key: str):
+        self.embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+        self.llm = ChatGroq(
+            model="llama-3.1-70b-versatile",
+            groq_api_key=groq_api_key,
+            temperature=0,
         )
-        return {
-            "answer": response.choices[0].message.content,
-            "sources": sorted(set(r["source"] for r in retrieved)),
-        }
+        self.vectorstore = self._load_or_build_index()
+        self.chain = self._build_chain()
+
+    # ---------------------------------------------------------------
+    # Index building / loading
+    # ---------------------------------------------------------------
+    def _load_or_build_index(self) -> FAISS:
+        """Load a persisted FAISS index if it exists, else build one
+        from the PDFs and save it so future runs skip re-embedding."""
+        if os.path.exists(INDEX_DIR):
+            return FAISS.load_local(
+                INDEX_DIR, self.embeddings, allow_dangerous_deserialization=True
+            )
+
+        loader = PyPDFDirectoryLoader(PAPERS_DIR)
+        documents = loader.load()
+
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=CHUNK_SIZE,
+            chunk_overlap=CHUNK_OVERLAP,
+            separators=["\n\n", "\n", ". ", " ", ""],
+        )
+        chunks = splitter.split_documents(documents)
+
+        vectorstore = FAISS.from_documents(chunks, self.embeddings)
+        vectorstore.save_local(INDEX_DIR)
+        return vectorstore
+
+    # ---------------------------------------------------------------
+    # Retrieval with distance filtering
+    # ---------------------------------------------------------------
+    def _filtered_retrieve(self, query: str):
+        """Same idea as your original distance-filtered retrieval:
+        drop chunks that are too far from the query instead of
+        forcing them into the prompt."""
+        results = self.vectorstore.similarity_search_with_score(query, k=TOP_K)
+        return [doc for doc, score in results if score <= DISTANCE_THRESHOLD]
+
+    # ---------------------------------------------------------------
+    # Generation chain (LCEL)
+    # ---------------------------------------------------------------
+    def _build_chain(self):
+        def format_docs(docs):
+            if not docs:
+                return "No relevant context found."
+            return "\n\n".join(
+                f"[{d.metadata.get('source', 'unknown')} p.{d.metadata.get('page', '?')}] {d.page_content}"
+                for d in docs
+            )
+
+        chain = (
+            {
+                "context": lambda x: format_docs(self._filtered_retrieve(x["question"])),
+                "question": lambda x: x["question"],
+            }
+            | RAG_PROMPT
+            | self.llm
+            | StrOutputParser()
+        )
+        return chain
+
+    # ---------------------------------------------------------------
+    # Public API — keep this signature close to your original so
+    # app.py / agent.py need minimal changes.
+    # ---------------------------------------------------------------
+    def query(self, question: str) -> dict:
+        docs = self._filtered_retrieve(question)
+        answer = self.chain.invoke({"question": question})
+        sources = [
+            {"source": d.metadata.get("source", "unknown"), "page": d.metadata.get("page")}
+            for d in docs
+        ]
+        return {"answer": answer, "sources": sources}

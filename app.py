@@ -1,123 +1,89 @@
 """
-Streamlit UI for the Multi-Tool RAG Research Assistant.
-
-Run locally:
-    streamlit run app.py
-
-Deploy on Streamlit Community Cloud:
-    Set GROQ_API_KEY in the app's "Secrets" panel (see README.md).
+Streamlit chat UI for the Multi-Tool RAG Research Assistant.
+Uses the LangChain-based RAGEngine and tool-calling agent.
 """
-import os
-import glob
+
 import streamlit as st
 from src.rag_engine import RAGEngine
-from src.agent import Agent
-from scripts.download_papers import download_papers
+from src.agent import build_agent, run_agent
 
-st.set_page_config(page_title="ML Papers Agent", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="RAG Research Assistant", page_icon="🤖", layout="wide")
 
-# ---------- Auto-download papers on first boot (e.g. Streamlit Cloud) ----------
-# data/papers/ is gitignored, so a freshly cloned deployment starts empty.
-if not glob.glob("data/papers/*.pdf"):
-    with st.spinner("First-time setup: downloading papers..."):
-        download_papers("data/papers")
-
-# ---------- API key: Streamlit secrets first, then env var (for local runs) ----------
-def get_groq_api_key() -> str | None:
-    try:
-        return st.secrets["GROQ_API_KEY"]
-    except (KeyError, FileNotFoundError):
-        return os.environ.get("GROQ_API_KEY")
+# ---------------------------------------------------------------
+# Cached resources — only build the index / agent once per session
+# ---------------------------------------------------------------
+@st.cache_resource
+def get_rag_engine():
+    return RAGEngine(groq_api_key=st.secrets["GROQ_API_KEY"])
 
 
-groq_api_key = get_groq_api_key()
-
-if not groq_api_key:
-    st.error(
-        "No GROQ_API_KEY found. Add it to `.streamlit/secrets.toml` locally, "
-        "or in your Streamlit Cloud app's Secrets panel. See README.md."
-    )
-    st.stop()
+@st.cache_resource
+def get_agent(_rag_engine):
+    return build_agent(st.secrets["GROQ_API_KEY"], _rag_engine)
 
 
-# ---------- Build the pipeline once, cache across reruns ----------
-@st.cache_resource(show_spinner="Indexing papers (first load only)...")
-def load_engine():
-    engine = RAGEngine(groq_api_key=groq_api_key, papers_dir="data/papers")
-    return engine, Agent(engine)
+rag_engine = get_rag_engine()
+agent_executor = get_agent(rag_engine)
 
-
-try:
-    rag_engine, agent = load_engine()
-except RuntimeError as e:
-    st.error(str(e))
-    st.info("Run `python scripts/download_papers.py` first, then reload.")
-    st.stop()
-
-
-# ---------- Sidebar ----------
+# ---------------------------------------------------------------
+# Sidebar
+# ---------------------------------------------------------------
 with st.sidebar:
-    st.header("🤖 About this agent")
+    st.header("🤖 About")
     st.markdown(
-        "A **Retrieval-Augmented Generation** assistant over 8 classic ML "
-        "papers, wrapped in a multi-tool agent."
+        """
+This assistant answers questions over 8 foundational ML papers
+(Transformer, BERT, ResNet, GPT-3, Adam, Dropout, Batch Norm, ViT)
+using Retrieval-Augmented Generation.
+
+It also has a calculator, keyword extractor, and word counter —
+the agent decides which tool fits your question.
+
+**Try asking:**
+- "What is the attention mechanism in transformers?"
+- "calculate 50+6*7%10-5"
+- "extract keywords from Artificial Intelligence is transforming industries"
+- "word count of The quick brown fox jumps over the lazy dog"
+        """
     )
-    st.markdown("**Papers indexed:**")
-    st.markdown(
-        "- Attention Is All You Need\n"
-        "- BERT\n- ResNet\n- GPT-3\n- Adam Optimizer\n"
-        "- Dropout\n- Batch Normalization\n- ViT"
-    )
-    st.markdown("**Tools available:**")
-    st.markdown(
-        "- 📄 **RAG** — ask about any of the papers above\n"
-        "- 🧮 **Calculator** — e.g. `50+6*7%10`\n"
-        "- 🔑 **Keyword extractor** — `extract keywords from ...`\n"
-        "- 🔢 **Word counter** — `word count of ...`"
-    )
-    if st.button("🗑️ Clear chat"):
+    if st.button("Clear chat"):
         st.session_state.messages = []
         st.rerun()
 
-st.title("🤖 ML Papers Multi-Tool Agent")
-st.caption("Ask about 8 classic ML papers, or use the calculator / keyword / word-count tools.")
-
+# ---------------------------------------------------------------
+# Chat state
+# ---------------------------------------------------------------
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+st.title("🤖 Multi-Tool RAG Research Assistant")
+
+# Render chat history
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
-        if msg.get("sources"):
-            st.caption("📚 Sources: " + ", ".join(msg["sources"]))
+        if msg["role"] == "assistant" and msg.get("tool"):
+            st.caption(f"🔧 Tool used: `{msg['tool']}`")
 
-if prompt := st.chat_input("Ask a question, or try 'calculate 12*7'..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
+# ---------------------------------------------------------------
+# Chat input
+# ---------------------------------------------------------------
+user_query = st.chat_input("Ask about the papers, or try the calculator/keyword tools...")
+
+if user_query:
+    st.session_state.messages.append({"role": "user", "content": user_query})
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(user_query)
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            result = agent.run(prompt)
+            result = run_agent(agent_executor, user_query)
+            answer = result["answer"]
+            tool_used = result["tool"]
 
-        badge = {
-            "rag_answer": "📄 RAG",
-            "calculation": "🧮 Calculator",
-            "keywords": "🔑 Keywords",
-            "word_count": "🔢 Word count",
-            "general": "💬 General",
-            "error": "⚠️ Error",
-        }.get(result["type"], result["type"])
+        st.markdown(answer)
+        st.caption(f"🔧 Tool used: `{tool_used}`")
 
-        st.markdown(f"`{badge}`")
-        st.markdown(result["result"])
-
-        sources = result.get("sources")
-        if sources:
-            st.caption("📚 Sources: " + ", ".join(sources))
-
-    st.session_state.messages.append({
-        "role": "assistant",
-        "content": f"`{badge}`\n\n{result['result']}",
-        "sources": sources,
-    })
+    st.session_state.messages.append(
+        {"role": "assistant", "content": answer, "tool": tool_used}
+    )
