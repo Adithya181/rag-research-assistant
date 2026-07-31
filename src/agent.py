@@ -60,10 +60,10 @@ def build_agent(groq_api_key: str, rag_engine: RAGEngine) -> AgentExecutor:
 
     # ---- Agent ----
     llm = ChatGroq(
-    model="openai/gpt-oss-20b",
-    groq_api_key=groq_api_key,
-    temperature=0,
-)
+        model="openai/gpt-oss-20b",
+        groq_api_key=groq_api_key,
+        temperature=0,
+    )
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -83,10 +83,17 @@ Classify every user message into exactly one of these categories,
 and respond accordingly:
 
 1. ABOUT THE 8 PAPERS
-   The question is directly about one of: Transformer, BERT, ResNet,
-   GPT-3, Adam, Batch Normalization, Dropout, Vision Transformer (ViT).
-   → Call the knowledge_base_search tool. Do not answer from your own
-   knowledge instead.
+   The question is about, mentions, or asks to explain/define ANY of
+   these 8 topics, in any phrasing — including simple "what is X" or
+   "explain X" questions: Transformer, BERT, ResNet, GPT-3, Adam,
+   Batch Normalization, Dropout, Vision Transformer (ViT).
+   → Call the knowledge_base_search tool. Do NOT answer from your own
+   knowledge instead, even if you already know the answer.
+   Examples that MUST use this tool:
+     "what is dropout" → knowledge_base_search
+     "what is batch normalization" → knowledge_base_search
+     "explain the attention mechanism" → knowledge_base_search
+     "how does ResNet work" → knowledge_base_search
 
 2. MATH / KEYWORDS / WORD COUNT
    → Call calculator, extract_keywords, or word_count as appropriate.
@@ -99,6 +106,13 @@ and respond accordingly:
    → Do NOT call any tool. Answer directly and helpfully from your own
    knowledge, but your response MUST start with the exact literal tag
    "[GENERAL_KNOWLEDGE]" followed by a space, then your answer.
+
+   IMPORTANT: If the question names or clearly refers to one of the 8
+   topics listed in category 1 — even as a simple "what is X" —
+   category 1 always applies instead, no matter how basic or
+   definitional the question sounds. Category 3 is ONLY for ML/AI
+   concepts that are NOT among those 8 named topics (e.g. overfitting,
+   gradient descent, CNNs vs RNNs, regularization in general).
 
 4. COMPLETELY UNRELATED
    The question has nothing to do with ML, AI, or CS (e.g. "what's

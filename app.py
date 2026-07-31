@@ -10,6 +10,30 @@ from src.agent import build_agent, run_agent
 st.set_page_config(page_title="RAG Research Assistant", page_icon="🤖", layout="wide")
 
 # ---------------------------------------------------------------
+# Friendly tool badges
+# ---------------------------------------------------------------
+TOOL_BADGES = {
+    "knowledge_base_search": "🧠 Knowledge Base Search",
+    "calculator": "🧮 Calculator",
+    "extract_keywords": "🔑 Keyword Extractor",
+    "word_count": "📝 Word Counter",
+    "general_knowledge": "💭 General Knowledge (not from papers)",
+    "out_of_scope": "🚫 Out of Scope",
+    "rate_limited": "⏳ Rate Limited",
+    "api_error": "⚠️ API Error",
+    "LLM": "🤖 Direct Answer",
+}
+
+
+def format_tool_label(tool_string: str) -> str:
+    """Map a (possibly chained) tool string like
+    'calculator → word_count' to friendly badges."""
+    parts = [p.strip() for p in tool_string.split("→")]
+    labels = [TOOL_BADGES.get(p, p) for p in parts]
+    return " → ".join(labels)
+
+
+# ---------------------------------------------------------------
 # Cached resources — only build the index / agent once per session
 # ---------------------------------------------------------------
 @st.cache_resource
@@ -63,10 +87,12 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
         if msg["role"] == "assistant" and msg.get("tool"):
-            st.caption(f"🔧 Tool used: `{msg['tool']}`")
+            st.caption(f"🔧 Tool used: {format_tool_label(msg['tool'])}")
 
 # ---------------------------------------------------------------
-# Chat input
+# Chat input (no artificial throttling — responds immediately;
+# actual Groq rate-limit errors are still caught gracefully in
+# run_agent / RAGEngine.query if they occur)
 # ---------------------------------------------------------------
 user_query = st.chat_input("Ask about the papers, or try the calculator/keyword tools...")
 
@@ -82,7 +108,7 @@ if user_query:
             tool_used = result["tool"]
 
         st.markdown(answer)
-        st.caption(f"🔧 Tool used: `{tool_used}`")
+        st.caption(f"🔧 Tool used: {format_tool_label(tool_used)}")
 
     st.session_state.messages.append(
         {"role": "assistant", "content": answer, "tool": tool_used}

@@ -23,7 +23,11 @@ INDEX_DIR = "data/faiss_index"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 150
-DISTANCE_THRESHOLD = 0.8  # tune based on your embedding model's score scale
+# Minimum relevance score (0-1, higher = more similar) required to keep
+# a retrieved chunk. Uses LangChain's normalized relevance score rather
+# than raw FAISS L2 distance, so this threshold is on a predictable
+# scale regardless of embedding dimensionality/normalization.
+RELEVANCE_THRESHOLD = 0.3
 TOP_K = 4
 
 RAG_PROMPT = ChatPromptTemplate.from_template(
@@ -43,11 +47,17 @@ Answer, citing which paper(s) you drew from where relevant:"""
 
 class RAGEngine:
     def __init__(self, groq_api_key: str):
-        self.embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+        # normalize_embeddings=True puts vectors on the unit sphere, so
+        # FAISS L2 distance becomes a well-behaved, bounded (0-2) value
+        # and cosine-similarity-based relevance scoring works correctly.
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            encode_kwargs={"normalize_embeddings": True},
+        )
         self.llm = ChatGroq(
-        model="openai/gpt-oss-120b",
-        groq_api_key=groq_api_key,
-        temperature=0,
+            model="openai/gpt-oss-120b",
+            groq_api_key=groq_api_key,
+            temperature=0,
         )
         self.vectorstore = self._load_or_build_index()
         self.chain = self._build_chain()
@@ -78,18 +88,18 @@ class RAGEngine:
         return vectorstore
 
     # ---------------------------------------------------------------
-    # Retrieval with distance filtering
+    # Retrieval with relevance filtering
     # ---------------------------------------------------------------
     def _filtered_retrieve(self, query: str):
-        """Retrieve top-k chunks, dropping anything beyond the
-        similarity distance threshold so out-of-scope questions
-        don't get forced context and hallucinated answers."""
-        docs_and_scores = self.vectorstore.similarity_search_with_score(
+        """Retrieve top-k chunks, dropping anything below the
+        relevance threshold so out-of-scope questions don't get
+        forced context and hallucinated answers."""
+        docs_and_scores = self.vectorstore.similarity_search_with_relevance_scores(
             query, k=TOP_K
         )
 
         filtered_docs = [
-            doc for doc, score in docs_and_scores if score <= DISTANCE_THRESHOLD
+            doc for doc, score in docs_and_scores if score >= RELEVANCE_THRESHOLD
         ]
 
         return filtered_docs
