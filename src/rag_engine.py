@@ -15,7 +15,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
+from groq import RateLimitError, APIError
 
 # ---- Config ----
 PAPERS_DIR = "data/papers"
@@ -45,9 +45,9 @@ class RAGEngine:
     def __init__(self, groq_api_key: str):
         self.embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
         self.llm = ChatGroq(
-            model="llama-3.3-70b-versatile",
-            groq_api_key=groq_api_key,
-            temperature=0,
+        model="openai/gpt-oss-120b",
+        groq_api_key=groq_api_key,
+        temperature=0,
         )
         self.vectorstore = self._load_or_build_index()
         self.chain = self._build_chain()
@@ -81,11 +81,18 @@ class RAGEngine:
     # Retrieval with distance filtering
     # ---------------------------------------------------------------
     def _filtered_retrieve(self, query: str):
-        """Same idea as your original distance-filtered retrieval:
-        drop chunks that are too far from the query instead of
-        forcing them into the prompt."""
-        results = self.vectorstore.similarity_search_with_score(query, k=TOP_K)
-        return [doc for doc, score in results if score <= DISTANCE_THRESHOLD]
+        """Retrieve top-k chunks, dropping anything beyond the
+        similarity distance threshold so out-of-scope questions
+        don't get forced context and hallucinated answers."""
+        docs_and_scores = self.vectorstore.similarity_search_with_score(
+            query, k=TOP_K
+        )
+
+        filtered_docs = [
+            doc for doc, score in docs_and_scores if score <= DISTANCE_THRESHOLD
+        ]
+
+        return filtered_docs
 
     # ---------------------------------------------------------------
     # Generation chain (LCEL)
@@ -116,9 +123,33 @@ class RAGEngine:
     # ---------------------------------------------------------------
     def query(self, question: str) -> dict:
         docs = self._filtered_retrieve(question)
-        answer = self.chain.invoke({"question": question})
-        sources = [
-            {"source": d.metadata.get("source", "unknown"), "page": d.metadata.get("page")}
-            for d in docs
-        ]
+
+        try:
+            answer = self.chain.invoke({"question": question})
+        except RateLimitError:
+            return {
+                "answer": (
+                    "I'm getting rate-limited by the Groq API right now. "
+                    "Please wait a minute and try again."
+                ),
+                "sources": [],
+            }
+        except APIError:
+            return {
+                "answer": (
+                    "The Groq API returned an error and couldn't "
+                    "complete this request. Please try again shortly."
+                ),
+                "sources": [],
+            }
+
+        # Deduplicate sources while preserving order
+        seen = set()
+        sources = []
+        for d in docs:
+            key = (d.metadata.get("source", "unknown"), d.metadata.get("page"))
+            if key not in seen:
+                seen.add(key)
+                sources.append({"source": key[0], "page": key[1]})
+
         return {"answer": answer, "sources": sources}
