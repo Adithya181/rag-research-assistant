@@ -45,7 +45,7 @@ class RAGEngine:
     def __init__(self, groq_api_key: str):
         self.embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
         self.llm = ChatGroq(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             groq_api_key=groq_api_key,
             temperature=0,
         )
