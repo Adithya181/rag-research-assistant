@@ -1,20 +1,15 @@
 # 🤖 Multi-Tool RAG Research Assistant
 
-[![Live Demo](https://rag-research-assistant-adithya.streamlit.app/)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](#license)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://rag-research-assistant-adithya.streamlit.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/built%20with-Streamlit-ff4b4b)](https://streamlit.io/)
 
-A Retrieval-Augmented Generation (RAG) system over 8 foundational machine
-learning papers (Transformer, BERT, ResNet, GPT-3, Adam, Dropout, Batch
-Normalization, ViT), wrapped in a multi-tool agent and served through an
-interactive Streamlit chat UI.
+🔗 **[Live Demo](https://rag-research-assistant-adithya.streamlit.app)**
 
-Ask it to explain a paper's architecture, run a calculation, extract
-keywords, or count words in a passage — the agent decides which tool to
-use and answers accordingly, citing sources for anything grounded in the
-papers.
+A Retrieval-Augmented Generation (RAG) system over 8 foundational machine learning papers (Transformer, BERT, ResNet, GPT-3, Adam, Dropout, Batch Normalization, ViT), wrapped in a multi-tool agent and served through an interactive Streamlit chat UI.
 
-🔗 **[Try the live demo](https://rag-research-assistant-fuzjfaqbygqztvishbrv6c.streamlit.app)**
+Ask it to explain a paper's architecture, run a calculation, extract keywords, or count words in a passage — the agent decides which tool to use and answers accordingly, citing sources for anything grounded in the papers.
 
 ---
 
@@ -27,8 +22,6 @@ papers.
 - [Deploying to Streamlit Community Cloud](#deploying-to-streamlit-community-cloud)
 - [Example queries](#example-queries)
 - [Tech stack](#tech-stack)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Features
@@ -72,8 +65,11 @@ rag-research-assistant/
 ├── scripts/
 │   └── download_papers.py      # reproducibly fetches the 8 papers from arXiv
 ├── data/papers/                 # downloaded PDFs (gitignored, regenerate locally)
+├── .streamlit/
+│   └── secrets.toml.example     # template for local API key config
+├── .agents/skills/               # agent skill definitions
 ├── requirements.txt
-└── .streamlit/secrets.toml.example
+└── README.md
 ```
 
 ## Setup
@@ -122,8 +118,8 @@ rag-research-assistant/
 
 ## Example queries
 
-| Query                                                                      | Tool used          |
-| --------------------------------------------------------------------------- | ------------------- |
+| Query                                                                       | Tool used          |
+| ---------------------------------------------------------------------------- | ------------------- |
 | "What is the attention mechanism in transformers?"                          | RAG                 |
 | "Explain how ResNet solves the vanishing gradient problem"                  | RAG                 |
 | "calculate 50+6\*7%10-5"                                                     | Calculator          |
@@ -133,17 +129,6 @@ rag-research-assistant/
 ## Tech stack
 
 Python · Streamlit · Sentence-Transformers · FAISS · Groq (LLaMA 3.1) · pypdf
-
-## Troubleshooting
-
-- **`GROQ_API_KEY` not found** — make sure `.streamlit/secrets.toml` exists locally (or `GROQ_API_KEY` is set under Settings → Secrets on Streamlit Cloud) and that the key name matches exactly.
-- **Empty or missing `data/papers/`** — run `python scripts/download_papers.py` before starting the app; the folder is gitignored on purpose.
-- **FAISS index errors after adding papers** — delete any cached index files and re-run ingestion so the index matches the current paper set.
-- **Slow first response** — the first query loads the embedding model and builds/reads the FAISS index; subsequent queries are faster.
-
-## Contributing
-
-Issues and pull requests are welcome. If you're adding a new tool to the agent (beyond calculator/keywords/word-count), please include a short description of its routing trigger and an example query in your PR.
 
 ## License
 
