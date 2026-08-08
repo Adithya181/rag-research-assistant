@@ -1,6 +1,6 @@
 # 🤖 Multi-Tool RAG Research Assistant
 
-[![Live Demo](https://img.shields.io/badge/demo-streamlit-ff4b4b?logo=streamlit&logoColor=white)](https://rag-research-assistant-fuzjfaqbygqztvishbrv6c.streamlit.app)
+[![Live Demo](https://rag-research-assistant-adithya.streamlit.app/)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](#license)
 
