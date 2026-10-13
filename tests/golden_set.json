@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "question": "What is the attention mechanism in the Transformer?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "scaled dot-product attention, queries, keys, values"
+  },
+  {
+    "id": 2,
+    "question": "What is multi-head attention?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "parallel attention heads, project queries keys values"
+  },
+  {
+    "id": 3,
+    "question": "Why do the authors of Attention is All You Need use positional encoding?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "no recurrence, inject sequence order information"
+  },
+  {
+    "id": 4,
+    "question": "What is the encoder-decoder structure in the Transformer?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "encoder stack, decoder stack, cross-attention"
+  },
+  {
+    "id": 5,
+    "question": "How does the Transformer model handle variable-length sequences?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "self-attention over all positions, no recurrence"
+  },
+  {
+    "id": 6,
+    "question": "What is BERT and what does it stand for?",
+    "expected_source": "data/papers/bert.pdf",
+    "answer_hint": "Bidirectional Encoder Representations from Transformers"
+  },
+  {
+    "id": 7,
+    "question": "What is masked language modelling in BERT?",
+    "expected_source": "data/papers/bert.pdf",
+    "answer_hint": "mask tokens, predict masked words, bidirectional context"
+  },
+  {
+    "id": 8,
+    "question": "What is the next sentence prediction task in BERT?",
+    "expected_source": "data/papers/bert.pdf",
+    "answer_hint": "predict whether sentence B follows sentence A"
+  },
+  {
+    "id": 9,
+    "question": "How is BERT fine-tuned for downstream tasks?",
+    "expected_source": "data/papers/bert.pdf",
+    "answer_hint": "add task-specific layer, fine-tune all parameters"
+  },
+  {
+    "id": 10,
+    "question": "What is the difference between BERT base and BERT large?",
+    "expected_source": "data/papers/bert.pdf",
+    "answer_hint": "number of layers, hidden size, attention heads"
+  },
+  {
+    "id": 11,
+    "question": "What problem does ResNet solve?",
+    "expected_source": "data/papers/resnet.pdf",
+    "answer_hint": "vanishing gradient, degradation problem in deep networks"
+  },
+  {
+    "id": 12,
+    "question": "What is a residual connection or skip connection?",
+    "expected_source": "data/papers/resnet.pdf",
+    "answer_hint": "shortcut connection, add input to output of layers"
+  },
+  {
+    "id": 13,
+    "question": "How deep is ResNet-152?",
+    "expected_source": "data/papers/resnet.pdf",
+    "answer_hint": "152 layers"
+  },
+  {
+    "id": 14,
+    "question": "What is the bottleneck architecture in ResNet?",
+    "expected_source": "data/papers/resnet.pdf",
+    "answer_hint": "1x1 conv to reduce dimensions, 3x3 conv, 1x1 to restore"
+  },
+  {
+    "id": 15,
+    "question": "What dataset was ResNet evaluated on?",
+    "expected_source": "data/papers/resnet.pdf",
+    "answer_hint": "ImageNet, ILSVRC"
+  },
+  {
+    "id": 16,
+    "question": "What is GPT-3?",
+    "expected_source": "data/papers/gpt3.pdf",
+    "answer_hint": "autoregressive language model, 175 billion parameters"
+  },
+  {
+    "id": 17,
+    "question": "What is few-shot learning as described in the GPT-3 paper?",
+    "expected_source": "data/papers/gpt3.pdf",
+    "answer_hint": "in-context examples, no gradient update, prompt conditioning"
+  },
+  {
+    "id": 18,
+    "question": "How many parameters does GPT-3 have?",
+    "expected_source": "data/papers/gpt3.pdf",
+    "answer_hint": "175 billion"
+  },
+  {
+    "id": 19,
+    "question": "What is zero-shot learning in the context of GPT-3?",
+    "expected_source": "data/papers/gpt3.pdf",
+    "answer_hint": "no examples in prompt, task description only"
+  },
+  {
+    "id": 20,
+    "question": "What tasks does GPT-3 perform well on?",
+    "expected_source": "data/papers/gpt3.pdf",
+    "answer_hint": "translation, question answering, cloze tasks"
+  },
+  {
+    "id": 21,
+    "question": "What is the Adam optimizer?",
+    "expected_source": "data/papers/adam_optimizer.pdf",
+    "answer_hint": "adaptive learning rates, first and second moment estimates"
+  },
+  {
+    "id": 22,
+    "question": "How does Adam differ from SGD?",
+    "expected_source": "data/papers/adam_optimizer.pdf",
+    "answer_hint": "per-parameter adaptive learning rates, momentum"
+  },
+  {
+    "id": 23,
+    "question": "What are the beta hyperparameters in Adam?",
+    "expected_source": "data/papers/adam_optimizer.pdf",
+    "answer_hint": "beta1 exponential decay for first moment, beta2 for second moment"
+  },
+  {
+    "id": 24,
+    "question": "What is bias correction in Adam?",
+    "expected_source": "data/papers/adam_optimizer.pdf",
+    "answer_hint": "correct initialization bias of moment estimates"
+  },
+  {
+    "id": 25,
+    "question": "What are the recommended default hyperparameter values in Adam?",
+    "expected_source": "data/papers/adam_optimizer.pdf",
+    "answer_hint": "alpha 0.001, beta1 0.9, beta2 0.999, epsilon 1e-8"
+  },
+  {
+    "id": 26,
+    "question": "What is dropout and why is it used?",
+    "expected_source": "data/papers/dropout.pdf",
+    "answer_hint": "randomly drop units, prevent overfitting, regularization"
+  },
+  {
+    "id": 27,
+    "question": "How is dropout applied during training versus inference?",
+    "expected_source": "data/papers/dropout.pdf",
+    "answer_hint": "drop units at rate p during training, scale weights at test time"
+  },
+  {
+    "id": 28,
+    "question": "What dropout rate do the authors recommend?",
+    "expected_source": "data/papers/dropout.pdf",
+    "answer_hint": "0.5 for hidden units, 0.2 for input units"
+  },
+  {
+    "id": 29,
+    "question": "How does dropout approximate model averaging?",
+    "expected_source": "data/papers/dropout.pdf",
+    "answer_hint": "2^n possible thinned networks, geometric mean"
+  },
+  {
+    "id": 30,
+    "question": "What datasets did the dropout paper evaluate on?",
+    "expected_source": "data/papers/dropout.pdf",
+    "answer_hint": "MNIST, CIFAR, ImageNet, Reuters, TIMIT"
+  },
+  {
+    "id": 31,
+    "question": "What is batch normalization?",
+    "expected_source": "data/papers/batch_normalization.pdf",
+    "answer_hint": "normalize layer inputs, reduce internal covariate shift"
+  },
+  {
+    "id": 32,
+    "question": "What is internal covariate shift?",
+    "expected_source": "data/papers/batch_normalization.pdf",
+    "answer_hint": "distribution of layer inputs changes during training"
+  },
+  {
+    "id": 33,
+    "question": "Where is batch normalization applied in a network?",
+    "expected_source": "data/papers/batch_normalization.pdf",
+    "answer_hint": "before activation function, after linear transformation"
+  },
+  {
+    "id": 34,
+    "question": "What are the learnable parameters in batch normalization?",
+    "expected_source": "data/papers/batch_normalization.pdf",
+    "answer_hint": "gamma scale and beta shift parameters"
+  },
+  {
+    "id": 35,
+    "question": "How does batch normalization act as a regularizer?",
+    "expected_source": "data/papers/batch_normalization.pdf",
+    "answer_hint": "reduces need for dropout, higher learning rates possible"
+  },
+  {
+    "id": 36,
+    "question": "What is the Vision Transformer (ViT)?",
+    "expected_source": "data/papers/vit.pdf",
+    "answer_hint": "apply Transformer directly to image patches"
+  },
+  {
+    "id": 37,
+    "question": "How does ViT convert images into tokens?",
+    "expected_source": "data/papers/vit.pdf",
+    "answer_hint": "split image into fixed-size patches, linearly embed each patch"
+  },
+  {
+    "id": 38,
+    "question": "What is the CLS token in ViT?",
+    "expected_source": "data/papers/vit.pdf",
+    "answer_hint": "prepended learnable classification token, used for final prediction"
+  },
+  {
+    "id": 39,
+    "question": "Why does ViT require large datasets to train?",
+    "expected_source": "data/papers/vit.pdf",
+    "answer_hint": "lacks CNN inductive bias, needs more data to learn spatial structure"
+  },
+  {
+    "id": 40,
+    "question": "What patch size does the ViT paper use?",
+    "expected_source": "data/papers/vit.pdf",
+    "answer_hint": "16x16 pixels per patch, also 32x32"
+  },
+  {
+    "id": 41,
+    "question": "What is the role of the feed-forward network in a Transformer layer?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "position-wise fully connected, applied after attention"
+  },
+  {
+    "id": 42,
+    "question": "How does the Transformer achieve parallelism compared to RNNs?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "self-attention computes all positions simultaneously, no sequential steps"
+  },
+  {
+    "id": 43,
+    "question": "What pre-training corpora was BERT trained on?",
+    "expected_source": "data/papers/bert.pdf",
+    "answer_hint": "BooksCorpus, English Wikipedia"
+  },
+  {
+    "id": 44,
+    "question": "What is weight decay in the context of Adam optimizer?",
+    "expected_source": "data/papers/adam_optimizer.pdf",
+    "answer_hint": "L2 regularization, penalize large weights"
+  },
+  {
+    "id": 45,
+    "question": "How does ResNet compare to VGG on ImageNet?",
+    "expected_source": "data/papers/resnet.pdf",
+    "answer_hint": "lower error rate than VGG with more layers"
+  },
+  {
+    "id": 46,
+    "question": "What is inverted dropout and how does it differ from standard dropout?",
+    "expected_source": "data/papers/dropout.pdf",
+    "answer_hint": "scale activations at training time, no scaling needed at test time"
+  },
+  {
+    "id": 47,
+    "question": "How is positional information encoded in ViT?",
+    "expected_source": "data/papers/vit.pdf",
+    "answer_hint": "learnable position embeddings added to patch embeddings"
+  },
+  {
+    "id": 48,
+    "question": "What is one-shot learning in GPT-3?",
+    "expected_source": "data/papers/gpt3.pdf",
+    "answer_hint": "one example in the prompt context"
+  },
+  {
+    "id": 49,
+    "question": "What normalization is applied in each Transformer sublayer?",
+    "expected_source": "data/papers/attention_is_all_you_need.pdf",
+    "answer_hint": "layer normalization after residual connection"
+  },
+  {
+    "id": 50,
+    "question": "What is the batch size used during batch normalization at inference?",
+    "expected_source": "data/papers/batch_normalization.pdf",
+    "answer_hint": "population statistics computed from training, not per-batch at inference"
+  }
+]

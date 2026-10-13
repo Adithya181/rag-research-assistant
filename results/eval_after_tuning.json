@@ -1,0 +1,1816 @@
+{
+  "timestamp": "2026-10-13T04:39:18.988140Z",
+  "metrics": {
+    "n_questions": 50,
+    "k": 4,
+    "threshold": 0.1,
+    "hit_rate@1": 0.86,
+    "hit_rate@2": 0.94,
+    "hit_rate@4": 0.98,
+    "mrr": 0.9117
+  },
+  "details": [
+    {
+      "id": 1,
+      "question": "What is the attention mechanism in the Transformer?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/attention_is_all_you_need.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 4,
+          "score": 0.5149
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 7,
+          "score": 0.392
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 8,
+          "score": 0.3677
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 2,
+          "score": 0.3608
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "question": "What is multi-head attention?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/attention_is_all_you_need.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 13,
+          "score": 0.5007
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 4,
+          "score": 0.3833
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 4,
+          "score": 0.3801
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 14,
+          "score": 0.3312
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Why do the authors of Attention is All You Need use positional encoding?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/attention_is_all_you_need.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 2,
+          "score": 0.4909
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 12,
+          "score": 0.398
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 19,
+          "score": 0.3599
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 4,
+          "score": 0.3548
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "question": "What is the encoder-decoder structure in the Transformer?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 3,
+      "hit@1": false,
+      "hit@2": false,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.5593
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.4508
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 2,
+          "score": 0.4325
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 17,
+          "score": 0.4097
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "question": "How does the Transformer model handle variable-length sequences?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 4,
+      "hit@1": false,
+      "hit@2": false,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/gpt3.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/attention_is_all_you_need.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 70,
+          "score": 0.2942
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.2879
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 38,
+          "score": 0.261
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 4,
+          "score": 0.2401
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "What is BERT and what does it stand for?",
+      "expected": "data/papers/bert.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/bert.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 3,
+          "score": 0.2701
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 72,
+          "score": 0.2538
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 13,
+          "score": 0.2429
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 5,
+          "score": 0.229
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "What is masked language modelling in BERT?",
+      "expected": "data/papers/bert.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 11,
+          "score": 0.518
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 11,
+          "score": 0.4876
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 15,
+          "score": 0.4438
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 2,
+          "score": 0.4113
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "What is the next sentence prediction task in BERT?",
+      "expected": "data/papers/bert.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 12,
+          "score": 0.5622
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 3,
+          "score": 0.5506
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 5,
+          "score": 0.5413
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 3,
+          "score": 0.5269
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "question": "How is BERT fine-tuned for downstream tasks?",
+      "expected": "data/papers/bert.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 2,
+          "score": 0.5436
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 2,
+          "score": 0.5269
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 8,
+          "score": 0.4938
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 8,
+          "score": 0.4852
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "question": "What is the difference between BERT base and BERT large?",
+      "expected": "data/papers/bert.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 5,
+          "score": 0.3518
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 2,
+          "score": 0.3235
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 13,
+          "score": 0.2878
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 13,
+          "score": 0.2865
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "question": "What problem does ResNet solve?",
+      "expected": "data/papers/resnet.pdf",
+      "rank": 2,
+      "hit@1": false,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/vit.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 14,
+          "score": 0.2397
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 6,
+          "score": 0.2056
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 5,
+          "score": 0.1865
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 5,
+          "score": 0.1647
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "question": "What is a residual connection or skip connection?",
+      "expected": "data/papers/resnet.pdf",
+      "rank": 2,
+      "hit@1": false,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/dropout.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 16,
+          "score": 0.1277
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 1,
+          "score": 0.1221
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 4,
+          "score": 0.111
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "question": "How deep is ResNet-152?",
+      "expected": "data/papers/resnet.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 6,
+          "score": 0.3443
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 6,
+          "score": 0.2844
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 5,
+          "score": 0.28
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 4,
+          "score": 0.255
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "question": "What is the bottleneck architecture in ResNet?",
+      "expected": "data/papers/resnet.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/resnet.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 5,
+          "score": 0.5832
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 14,
+          "score": 0.4765
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 5,
+          "score": 0.4455
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 6,
+          "score": 0.4126
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "question": "What dataset was ResNet evaluated on?",
+      "expected": "data/papers/resnet.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 5,
+          "score": 0.4003
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 7,
+          "score": 0.3743
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 14,
+          "score": 0.3626
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 15,
+          "score": 0.3137
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "question": "What is GPT-3?",
+      "expected": "data/papers/gpt3.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 5,
+          "score": 0.3949
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 32,
+          "score": 0.3892
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 30,
+          "score": 0.3683
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 28,
+          "score": 0.3629
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "question": "What is few-shot learning as described in the GPT-3 paper?",
+      "expected": "data/papers/gpt3.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 33,
+          "score": 0.6774
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 11,
+          "score": 0.5885
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 4,
+          "score": 0.5833
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 5,
+          "score": 0.5582
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "question": "How many parameters does GPT-3 have?",
+      "expected": "data/papers/gpt3.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 17,
+          "score": 0.3306
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 32,
+          "score": 0.3271
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 5,
+          "score": 0.3266
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 21,
+          "score": 0.3134
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "question": "What is zero-shot learning in the context of GPT-3?",
+      "expected": "data/papers/gpt3.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 33,
+          "score": 0.5456
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 11,
+          "score": 0.5378
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 11,
+          "score": 0.4825
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 4,
+          "score": 0.4789
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "question": "What tasks does GPT-3 perform well on?",
+      "expected": "data/papers/gpt3.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 17,
+          "score": 0.5458
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 32,
+          "score": 0.486
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 4,
+          "score": 0.4832
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 17,
+          "score": 0.4807
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "question": "What is the Adam optimizer?",
+      "expected": "data/papers/adam_optimizer.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 0,
+          "score": 0.5654
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 14,
+          "score": 0.481
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 7,
+          "score": 0.465
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 5,
+          "score": 0.4436
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "question": "How does Adam differ from SGD?",
+      "expected": "data/papers/adam_optimizer.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 6,
+          "score": 0.3808
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 5,
+          "score": 0.3537
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 6,
+          "score": 0.3263
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 4,
+          "score": 0.3153
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "question": "What are the beta hyperparameters in Adam?",
+      "expected": "data/papers/adam_optimizer.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 7,
+          "score": 0.4329
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 4,
+          "score": 0.2767
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 4,
+          "score": 0.2672
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 0,
+          "score": 0.242
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "question": "What is bias correction in Adam?",
+      "expected": "data/papers/adam_optimizer.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 7,
+          "score": 0.4569
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 4,
+          "score": 0.3131
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 1,
+          "score": 0.2764
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 4,
+          "score": 0.2541
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "question": "What are the recommended default hyperparameter values in Adam?",
+      "expected": "data/papers/adam_optimizer.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 7,
+          "score": 0.4064
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 15,
+          "score": 0.3096
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 0,
+          "score": 0.2922
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 4,
+          "score": 0.2691
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "question": "What is dropout and why is it used?",
+      "expected": "data/papers/dropout.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 0,
+          "score": 0.4256
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.3751
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.3491
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 1,
+          "score": 0.2029
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "question": "How is dropout applied during training versus inference?",
+      "expected": "data/papers/dropout.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 0,
+          "score": 0.5937
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.5226
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 8,
+          "score": 0.3935
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 1,
+          "score": 0.3691
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "question": "What dropout rate do the authors recommend?",
+      "expected": "data/papers/dropout.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 0,
+          "score": 0.3415
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 4,
+          "score": 0.2861
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.2633
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.224
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "question": "How does dropout approximate model averaging?",
+      "expected": "data/papers/dropout.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.4919
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.4799
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 0,
+          "score": 0.4514
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 1,
+          "score": 0.3441
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "question": "What datasets did the dropout paper evaluate on?",
+      "expected": "data/papers/dropout.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 0,
+          "score": 0.48
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 4,
+          "score": 0.3247
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 8,
+          "score": 0.3174
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 12,
+          "score": 0.301
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "question": "What is batch normalization?",
+      "expected": "data/papers/batch_normalization.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.5163
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 7,
+          "score": 0.4798
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.4635
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.4581
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "question": "What is internal covariate shift?",
+      "expected": "data/papers/batch_normalization.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 0,
+          "score": 0.3169
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 0,
+          "score": 0.1988
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 1,
+          "score": 0.1153
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "question": "Where is batch normalization applied in a network?",
+      "expected": "data/papers/batch_normalization.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 5,
+          "score": 0.56
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.5579
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.5516
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 1,
+          "score": 0.5079
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "question": "What are the learnable parameters in batch normalization?",
+      "expected": "data/papers/batch_normalization.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.5249
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.5067
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 7,
+          "score": 0.5018
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 3,
+          "score": 0.4913
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "question": "How does batch normalization act as a regularizer?",
+      "expected": "data/papers/batch_normalization.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.5269
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 7,
+          "score": 0.4634
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 5,
+          "score": 0.4552
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.4414
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "question": "What is the Vision Transformer (ViT)?",
+      "expected": "data/papers/vit.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 7,
+          "score": 0.3803
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 6,
+          "score": 0.3435
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 4,
+          "score": 0.2756
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 1,
+          "score": 0.2718
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "question": "How does ViT convert images into tokens?",
+      "expected": "data/papers/vit.pdf",
+      "rank": 2,
+      "hit@1": false,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/bert.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 3,
+          "score": 0.2306
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.2176
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 11,
+          "score": 0.1841
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.1443
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "question": "What is the CLS token in ViT?",
+      "expected": "data/papers/vit.pdf",
+      "rank": null,
+      "hit@1": false,
+      "hit@2": false,
+      "hit@4": false,
+      "retrieved_sources": [
+        "data/papers/bert.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 3,
+          "score": 0.1125
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "question": "Why does ViT require large datasets to train?",
+      "expected": "data/papers/vit.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 18,
+          "score": 0.4766
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 13,
+          "score": 0.4125
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 4,
+          "score": 0.3667
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 5,
+          "score": 0.358
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "question": "What patch size does the ViT paper use?",
+      "expected": "data/papers/vit.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 4,
+          "score": 0.1276
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "question": "What is the role of the feed-forward network in a Transformer layer?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/attention_is_all_you_need.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 2,
+          "score": 0.4793
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.3238
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 3,
+          "score": 0.2892
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 4,
+          "score": 0.2599
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "question": "How does the Transformer achieve parallelism compared to RNNs?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 2,
+      "hit@1": false,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/vit.pdf",
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.3068
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 1,
+          "score": 0.2606
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 2,
+          "score": 0.26
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 0,
+          "score": 0.256
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "question": "What pre-training corpora was BERT trained on?",
+      "expected": "data/papers/bert.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf",
+        "data/papers/bert.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 13,
+          "score": 0.4872
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 11,
+          "score": 0.4819
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 13,
+          "score": 0.4273
+        },
+        {
+          "source": "data/papers/bert.pdf",
+          "page": 2,
+          "score": 0.4162
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "question": "What is weight decay in the context of Adam optimizer?",
+      "expected": "data/papers/adam_optimizer.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/adam_optimizer.pdf",
+        "data/papers/dropout.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 7,
+          "score": 0.5081
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 8,
+          "score": 0.3398
+        },
+        {
+          "source": "data/papers/adam_optimizer.pdf",
+          "page": 6,
+          "score": 0.3241
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 1,
+          "score": 0.3086
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "question": "How does ResNet compare to VGG on ImageNet?",
+      "expected": "data/papers/resnet.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/resnet.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 5,
+          "score": 0.4846
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 2,
+          "score": 0.4801
+        },
+        {
+          "source": "data/papers/resnet.pdf",
+          "page": 9,
+          "score": 0.4336
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 15,
+          "score": 0.4166
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "question": "What is inverted dropout and how does it differ from standard dropout?",
+      "expected": "data/papers/dropout.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf",
+        "data/papers/dropout.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 0,
+          "score": 0.2417
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.2202
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 5,
+          "score": 0.15
+        },
+        {
+          "source": "data/papers/dropout.pdf",
+          "page": 4,
+          "score": 0.1174
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "question": "How is positional information encoded in ViT?",
+      "expected": "data/papers/vit.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/vit.pdf",
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/vit.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 17,
+          "score": 0.3527
+        },
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 2,
+          "score": 0.286
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 17,
+          "score": 0.278
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 16,
+          "score": 0.2564
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "question": "What is one-shot learning in GPT-3?",
+      "expected": "data/papers/gpt3.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf",
+        "data/papers/gpt3.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 33,
+          "score": 0.6116
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 4,
+          "score": 0.5045
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 4,
+          "score": 0.4957
+        },
+        {
+          "source": "data/papers/gpt3.pdf",
+          "page": 4,
+          "score": 0.4952
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "question": "What normalization is applied in each Transformer sublayer?",
+      "expected": "data/papers/attention_is_all_you_need.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/attention_is_all_you_need.pdf",
+        "data/papers/vit.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/attention_is_all_you_need.pdf",
+          "page": 2,
+          "score": 0.3782
+        },
+        {
+          "source": "data/papers/vit.pdf",
+          "page": 2,
+          "score": 0.3509
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 2,
+          "score": 0.3357
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 2,
+          "score": 0.3223
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "question": "What is the batch size used during batch normalization at inference?",
+      "expected": "data/papers/batch_normalization.pdf",
+      "rank": 1,
+      "hit@1": true,
+      "hit@2": true,
+      "hit@4": true,
+      "retrieved_sources": [
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf",
+        "data/papers/batch_normalization.pdf"
+      ],
+      "chunks": [
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.4649
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 3,
+          "score": 0.4328
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.4241
+        },
+        {
+          "source": "data/papers/batch_normalization.pdf",
+          "page": 4,
+          "score": 0.3981
+        }
+      ]
+    }
+  ]
+}

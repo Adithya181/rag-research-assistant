@@ -6,14 +6,79 @@ using LangChain's tool-calling agent. The LLM itself decides which
 tool to call based on the user's query.
 """
 
+import ast
+import logging
+import operator
 import re
-from groq import RateLimitError, APIError
+from collections import deque
+from typing import Any
+
+from groq import APIError, RateLimitError
+from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain_core.messages import BaseMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import tool
 from langchain_groq import ChatGroq
-from langchain.agents import create_tool_calling_agent, AgentExecutor
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from src.rag_engine import RAGEngine
+
+logger = logging.getLogger(__name__)
+
+# ---- Safe arithmetic evaluator (replaces eval()) ----
+_ALLOWED_OPS: dict[type, Any] = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.Mod: operator.mod,
+    ast.Pow: operator.pow,
+    ast.USub: operator.neg,
+    ast.UAdd: operator.pos,
+}
+
+# Cap exponents to prevent 9**9**9**9 style denial-of-service
+_MAX_EXPONENT = 1_000
+
+
+def _safe_eval(node: ast.AST) -> float:
+    """Recursively evaluate a parsed AST, allowing only safe arithmetic."""
+    if isinstance(node, ast.Expression):
+        return _safe_eval(node.body)
+    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+        return node.value
+    if isinstance(node, ast.BinOp):
+        op_type = type(node.op)
+        if op_type not in _ALLOWED_OPS:
+            raise ValueError(f"Unsupported operator: {op_type.__name__}")
+        left = _safe_eval(node.left)
+        right = _safe_eval(node.right)
+        if op_type is ast.Pow and abs(right) > _MAX_EXPONENT:
+            raise ValueError(
+                f"Exponent {right} exceeds the safety limit ({_MAX_EXPONENT})."
+            )
+        return _ALLOWED_OPS[op_type](left, right)
+    if isinstance(node, ast.UnaryOp):
+        op_type = type(node.op)
+        if op_type not in _ALLOWED_OPS:
+            raise ValueError(f"Unsupported unary operator: {op_type.__name__}")
+        return _ALLOWED_OPS[op_type](_safe_eval(node.operand))
+    raise ValueError(f"Unsupported expression type: {type(node).__name__}")
+
+
+def safe_calculate(expression: str) -> str:
+    """Parse and evaluate expression via AST — no eval(), no DoS risk."""
+    try:
+        tree = ast.parse(expression.strip(), mode="eval")
+    except SyntaxError as e:
+        return f"Invalid expression syntax: {e}"
+    try:
+        result = _safe_eval(tree)
+    except (ValueError, ZeroDivisionError) as e:
+        return f"Could not evaluate: {e}"
+    # Return int if result is a whole number
+    if isinstance(result, float) and result.is_integer():
+        return str(int(result))
+    return str(result)
 
 
 def build_agent(groq_api_key: str, rag_engine: RAGEngine) -> AgentExecutor:
@@ -25,36 +90,65 @@ def build_agent(groq_api_key: str, rag_engine: RAGEngine) -> AgentExecutor:
         retrieval-augmented generation over the paper text. Use this
         for any conceptual or technical question about the papers."""
         result = rag_engine.query(query)
-        sources = ", ".join(s["source"] for s in result["sources"]) or "no matching source"
+        sources = (
+            ", ".join(s["source"] for s in result["sources"]) or "no matching source"
+        )
         return f"{result['answer']}\n\n(Sources: {sources})"
 
     @tool
     def calculator(expression: str) -> str:
-        """Evaluate a basic arithmetic expression, e.g. '50+6*7%10-5'.
-        Only supports +, -, *, /, %, parentheses, and numbers."""
-        if not re.fullmatch(r"[0-9\.\+\-\*\/\%\(\)\s]+", expression):
-            return "Invalid expression — only numbers and + - * / % ( ) are allowed."
-        try:
-            return str(eval(expression, {"__builtins__": {}}))
-        except Exception as e:
-            return f"Could not evaluate expression: {e}"
+        """Evaluate a basic arithmetic expression safely.
+
+        Supports +, -, *, /, %, ** (capped at exponent ≤ 1000), and
+        parentheses.  Uses an AST-based evaluator — no eval(), no
+        risk of code injection or denial-of-service via 9**9**9**9.
+
+        Examples: '50+6*7%10-5', '(3+4)*2', '2**10'
+        """
+        return safe_calculate(expression)
 
     @tool
     def extract_keywords(text: str) -> str:
-        """Extract the most significant keywords from a passage of text."""
+        """Extract statistically significant keywords from a passage of
+        text using TF-style term frequency, filtered by a stopword list.
+
+        Returns up to 10 keywords ranked by frequency (most frequent
+        first), which is more useful than a flat alphabetical dump.
+        """
         stopwords = {
             "is", "the", "a", "an", "and", "or", "of", "to", "in", "for",
             "on", "with", "are", "was", "were", "be", "by", "at", "from",
+            "that", "this", "it", "its", "as", "has", "have", "had",
+            "not", "but", "so", "if", "can", "also", "which", "their",
+            "they", "we", "our", "you", "your", "i", "me", "my",
         }
         words = re.findall(r"[A-Za-z]+", text.lower())
-        keywords = sorted(set(w for w in words if w not in stopwords and len(w) > 3))
-        return ", ".join(keywords) if keywords else "No significant keywords found."
+        freq: dict[str, int] = {}
+        for w in words:
+            if w not in stopwords and len(w) > 3:
+                freq[w] = freq.get(w, 0) + 1
+        if not freq:
+            return "No significant keywords found."
+        ranked = sorted(freq.items(), key=lambda x: -x[1])[:10]
+        return ", ".join(f"{w} ({c})" for w, c in ranked)
 
     @tool
     def word_count(text: str) -> str:
-        """Count the number of words in a passage of text."""
-        count = len(text.split())
-        return f"Word count: {count}"
+        """Count words, sentences, and characters in a passage of text.
+
+        Returns a breakdown rather than just a single number, which is
+        more informative for document analysis tasks.
+        """
+        word_list = text.split()
+        sentence_count = max(
+            1, len(re.findall(r"[.!?]+", text)) or 1
+        )
+        char_count = len(text)
+        char_no_space = len(text.replace(" ", ""))
+        return (
+            f"Words: {len(word_list)} | Sentences: {sentence_count} | "
+            f"Characters: {char_count} (excluding spaces: {char_no_space})"
+        )
 
     tools = [knowledge_base_search, calculator, extract_keywords, word_count]
 
@@ -104,31 +198,17 @@ and respond accordingly:
    overfitting", "explain gradient descent", "what's the difference
    between CNNs and RNNs").
    → Do NOT call any tool. Answer directly and helpfully from your own
-   knowledge, but your response MUST start with the exact literal tag
-   "[GENERAL_KNOWLEDGE]" followed by a space, then your answer.
-
-   IMPORTANT: If the question names or clearly refers to one of the 8
-   topics listed in category 1 — even as a simple "what is X" —
-   category 1 always applies instead, no matter how basic or
-   definitional the question sounds. Category 3 is ONLY for ML/AI
-   concepts that are NOT among those 8 named topics (e.g. overfitting,
-   gradient descent, CNNs vs RNNs, regularization in general).
+   knowledge.
 
 4. COMPLETELY UNRELATED
    The question has nothing to do with ML, AI, or CS (e.g. "what's
    the capital of France", "tell me a joke", "what's the weather").
-   → Do NOT call any tool. Do NOT answer the question at all. Your
-   entire response MUST be exactly this literal tag followed by a
-   space and this exact message:
-   "[OUT_OF_SCOPE] That's outside what I can help with — I can only
-   answer questions about the 8 ML papers (Transformer, BERT, ResNet,
-   GPT-3, Adam, Batch Normalization, Dropout, ViT), general ML/AI
-   concepts, or use the calculator, keyword extractor, and word
-   counter tools."
+   → Do NOT call any tool. Politely decline: say that you can only
+   answer questions about the 8 ML papers, general ML/AI concepts, or
+   use the calculator, keyword extractor, and word counter tools.
 
-Always pick exactly one category. Never blend categories, never skip
-the required tag for categories 3 and 4, and never call a tool that
-doesn't exist.""",
+Always pick exactly one category. Never blend categories and never
+call a tool that doesn't exist.""",
             ),
             MessagesPlaceholder(variable_name="chat_history", optional=True),
             ("human", "{input}"),
@@ -141,24 +221,38 @@ doesn't exist.""",
     executor = AgentExecutor(
         agent=agent,
         tools=tools,
-        verbose=True,
+        verbose=False,          # Don't leak internal traces to stdout/logs
         return_intermediate_steps=True,
+        max_iterations=6,       # Prevent runaway loops from burning quota
+        max_execution_time=30,  # Hard wall-clock timeout (seconds)
     )
 
     return executor
 
 
-def run_agent(executor: AgentExecutor, query: str) -> dict:
+def run_agent(
+    executor: AgentExecutor,
+    query: str,
+    chat_history: list[BaseMessage] | None = None,
+) -> dict:
+    """Run the agent and return answer + tool(s) used.
+
+    Args:
+        executor: The AgentExecutor built by build_agent().
+        query: The current user message.
+        chat_history: LangChain message objects from prior turns so
+            follow-up questions like "explain that more simply" work.
+
+    Returns:
+        {"answer": str, "tool": str}
     """
-    Runs the agent and returns:
-      - answer
-      - tool(s) used
-    Handles Groq rate limits and API errors gracefully instead of
-    letting them crash the Streamlit app.
-    """
+    payload: dict[str, Any] = {
+        "input": query,
+        "chat_history": chat_history or [],
+    }
 
     try:
-        result = executor.invoke({"input": query})
+        result = executor.invoke(payload)
     except RateLimitError:
         return {
             "answer": (
@@ -185,28 +279,12 @@ def run_agent(executor: AgentExecutor, query: str) -> dict:
     output = result["output"]
 
     if intermediate_steps:
-        tools_used = []
-
-        for action, observation in intermediate_steps:
-            tools_used.append(action.tool)
-
-        # Remove duplicates while preserving order
+        tools_used = [action.tool for action, _obs in intermediate_steps]
+        # Deduplicate while preserving order
         tool_used = " → ".join(dict.fromkeys(tools_used))
     else:
-        # No tool was called — check whether the LLM tagged this as
-        # general knowledge or out-of-scope, per the system prompt.
-        stripped = output.strip()
-        if stripped.startswith("[OUT_OF_SCOPE]"):
-            tool_used = "out_of_scope"
-            output = stripped[len("[OUT_OF_SCOPE]"):].strip()
-        elif stripped.startswith("[GENERAL_KNOWLEDGE]"):
-            tool_used = "general_knowledge"
-            output = stripped[len("[GENERAL_KNOWLEDGE]"):].strip()
-        else:
-            # Fallback: model didn't tag as instructed
-            tool_used = "LLM"
+        # No tool called — LLM answered directly (categories 3 or 4)
+        tool_used = "LLM"
 
-    return {
-        "answer": output,
-        "tool": tool_used,
-    }
+    logger.info("Query='%.60s' tool=%s", query, tool_used)
+    return {"answer": output, "tool": tool_used}
