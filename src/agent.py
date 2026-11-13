@@ -10,8 +10,32 @@ import ast
 import logging
 import operator
 import re
+import sys
 from collections import deque
 from typing import Any
+
+# Backward-compatibility shim for environments where langchain expects langchain_core.pydantic_v1
+import warnings
+
+try:
+    from langchain_core._api.deprecation import LangChainDeprecationWarning
+    warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
+except ImportError:
+    pass
+
+if "langchain_core.pydantic_v1" not in sys.modules:
+    try:
+        import langchain_core.pydantic_v1  # noqa: F401
+    except (ModuleNotFoundError, ImportError):
+        try:
+            import pydantic.v1 as _pydantic_v1
+            sys.modules["langchain_core.pydantic_v1"] = _pydantic_v1
+        except (ModuleNotFoundError, ImportError):
+            try:
+                import pydantic as _pydantic_v1
+                sys.modules["langchain_core.pydantic_v1"] = _pydantic_v1
+            except (ModuleNotFoundError, ImportError):
+                pass
 
 from groq import APIError, RateLimitError
 from langchain.agents import AgentExecutor, create_tool_calling_agent

@@ -1,12 +1,12 @@
 streamlit>=1.45.0
 
-# LangChain ecosystem — modern versions (0.3.x) with LangGraph-compatible APIs
-langchain>=0.3.0
-langchain-core>=0.3.0
-langchain-community>=0.3.0
-langchain-text-splitters>=0.3.0
-langchain-groq>=0.2.0
-langchain-huggingface>=0.1.0
+# LangChain ecosystem — modern stable versions (0.3.x)
+langchain>=0.3.0,<0.4.0
+langchain-core>=0.3.0,<0.4.0
+langchain-community>=0.3.0,<0.4.0
+langchain-text-splitters>=0.3.0,<0.4.0
+langchain-groq>=0.2.0,<0.3.0
+langchain-huggingface>=0.1.0,<0.2.0
 
 sentence-transformers>=3.0.0
 faiss-cpu>=1.7.4

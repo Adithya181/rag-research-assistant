@@ -1,15 +1,14 @@
 # 🤖 Multi-Tool RAG Research Assistant
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://rag-research-assistant-adithya.streamlit.app)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/built%20with-Streamlit-ff4b4b)](https://streamlit.io/)
-
-🔗 **[Live Demo](https://rag-research-assistant-adithya.streamlit.app)**
+[![Live Demo](https://img.shields.io/badge/demo-streamlit-ff4b4b?logo=streamlit&logoColor=white)](https://rag-research-assistant-fuzjfaqbygqztvishbrv6c.streamlit.app)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 A Retrieval-Augmented Generation (RAG) system over 8 foundational machine learning papers (Transformer, BERT, ResNet, GPT-3, Adam, Dropout, Batch Normalization, ViT), wrapped in a multi-tool LangChain agent and served through an interactive Streamlit chat UI.
 
 Ask it to explain a paper's architecture, run a calculation, extract keywords, or count words in a passage — the agent uses LLM-driven tool selection to pick the right tool and answers accordingly, citing sources for anything grounded in the papers.
+
+🔗 **[Try the live demo](https://rag-research-assistant-fuzjfaqbygqztvishbrv6c.streamlit.app)**
 
 ---
 
